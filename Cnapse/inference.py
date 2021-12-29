@@ -46,7 +46,7 @@ def em_detector(opt):
 		if (i+1) % 50 == 0 or (i+1) <=10:
 			print("Iter:  " + str(i+1) + ", elapsed time = " + str(elapsed))
 
-	h5write(opt.fwd_dir + opt.output_file, fold_out)
+	h5write(opt.output_file, fold_out)
 
 
 

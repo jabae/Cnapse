@@ -158,14 +158,14 @@ if __name__ == "__main__":
 
     opt.log_dir = opt.exp_dir + 'log/'    
     opt.model_dir = opt.exp_dir + 'model/'
-    opt.exp_name = 'EM detector'
+    opt.exp_name = 'Cnapse'
 
     opt.train_data = TRAIN
     opt.val_data = VAL
     opt.mip = 0
     opt.n_train = opt.train_data.image.shape[-1]
 
-    opt.gpu_ids = ["0","1","2","3"]
+    opt.gpu_ids = ["0","1","2","3","4","5","6","7"]
 
     opt.batch_size = len(opt.gpu_ids)
     opt.num_workers = len(opt.gpu_ids)
@@ -184,7 +184,7 @@ if __name__ == "__main__":
 
     opt.in_spec = ['image']
     opt.out_spec = ['mask']
-    opt.train_augment = ['flip','rotate90','contrast','blackpad','block']
+    opt.train_augment = ['flip','rotate90','contrast']
     opt.val_augment = []
     opt.pretrain = opt.pretrain
 
