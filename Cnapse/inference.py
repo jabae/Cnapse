@@ -1,5 +1,5 @@
 """
-Fold detector inference.
+Cnapse detector inference on test volume.
 """
 
 
@@ -15,7 +15,7 @@ from dataset import *
 from test.model import Model
 from test.utils import *
 
-from nets.detect_net import *
+from nets.cnapse_net import *
 
 
 def em_detector(opt):

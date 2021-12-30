@@ -15,7 +15,7 @@ from train.utils import *
 
 from dataset import *
 
-from nets.detect_net import *
+from nets.cnapse_net import *
 
 
 def train(opt):
