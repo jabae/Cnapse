@@ -113,6 +113,7 @@ if __name__ == "__main__":
 	out_pre_id = []
 	out_post_id = []
 	out_post_prop = []
+	out_error = []
 	for i in range(nsyn):
 
 		syn_id = syn_id_list[i]
@@ -149,6 +150,7 @@ if __name__ == "__main__":
 		
 			print(f"ERROR: Synapse with id {syn_id} has no emitter voxels!")
 			errcount = errcount + 1
+			out_error.append(1)
 
 		else:
 
@@ -213,10 +215,12 @@ if __name__ == "__main__":
 				out_pre_id.append(int(pre_id))
 				out_post_id.append(int(post_list[j]))
 				out_post_prop.append(post_size[j])
+				out_error.append(0)
 
 	syn_info = {"syn_id": out_syn_id,
 				"pre_id": out_pre_id,
 				"post_id": out_post_id,
-				"prop": out_post_prop}
+				"prop": out_post_prop,
+				"error": out_error}
 	out_df = pd.DataFrame(data=syn_info)
 	out_df.to_csv("synapse_assign.csv", index=False)
