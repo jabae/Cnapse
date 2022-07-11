@@ -80,7 +80,7 @@ if __name__ == "__main__":
 	syn_seg = load_volume(syn_seg_path, res)
 	seg = load_volume(seg_path, res)
 
-	volsize = syn_seg.shape
+	volsize = np.array(syn_seg.shape)
 
 	opt.diffusionsteplength_nm = 4
 	opt.nrdiffusionvectors = 10000
@@ -141,7 +141,7 @@ if __name__ == "__main__":
 		exc_valid = (seg_mask!=0) + (esyn==0)
 		epseg[exc_valid] = 0
 		
-		chunksize = epseg.shape
+		chunksize = np.array(epseg.shape)
 
 		emittervoxels_loc = np.where(epseg)
 		nemitvx = emittervoxels_loc[0].shape[0]
@@ -177,7 +177,7 @@ if __name__ == "__main__":
 				minp = np.min(p, axis=0)
 				maxp = np.max(p, axis=0)
 
-				if (np.min(minp)<0) or np.max(maxp-np.array(syn_vol.shape))>=0:
+				if (np.min(minp)<0) or np.max(maxp-chunksize)>=0:
 					
 					exited = (np.min(p, axis=1)<0) + (p[:,0]>=chunksize[0]) + (p[:,1]>=chunksize[1]) + (p[:,2]>=chunksize[2])
 					nt[exited,:3] = nt[exited,:3] - v[exited,:] # move back
