@@ -85,6 +85,7 @@ if __name__ == "__main__":
 	opt.nrofparticles = 1000
 	opt.voxelsize = np.array([4,4,50])
 	opt.maxiterations=10000
+	opt.radius_nm = 100
 	# opt.synexpandradiusxy_px = 6
 
 	# Precompute diffusion vectors
@@ -121,8 +122,8 @@ if __name__ == "__main__":
 
 		coord_max = np.max(syn_coord, axis=0)
 		coord_min = np.min(syn_coord, axis=0)
-		coord_max += np.ceil(r/voxelsize).astype("int")
-		coord_min -= np.ceil(r/voxelsize).astype("int")
+		coord_max += np.ceil(opt.radius_nm/voxelsize).astype("int")
+		coord_min -= np.ceil(opt.radius_nm/voxelsize).astype("int")
 
 		syn_mask = syn_mask[[slice(coord_min[i], coord_max[i]) for i in range(3)]]
 		seg_mask = seg[[slice(coord_min[i], coord_max[i]) for i in range(3)]]
