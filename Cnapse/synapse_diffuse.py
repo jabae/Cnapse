@@ -98,7 +98,7 @@ if __name__ == "__main__":
 
 	# Dilation params
 	seg_se = ball(2)
-	syn_se = np.zeros((3,3,3))
+	syn_se = np.zeros((10,10,10))
 	syn_se[:,:,1] = 1
 
 	# Synapse info
