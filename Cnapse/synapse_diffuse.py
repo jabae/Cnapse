@@ -31,6 +31,30 @@ def fibonacci_spiral_sphere(n_points):
  	return vec
 
 
+## Load volume
+def load_volume(path, res):
+	"""
+	INPUT:
+	path : Path of the volume
+	res : (x, y, z) resolution in nm
+
+	OUTPUT:
+	vol : Image volume
+	"""
+
+	if path[:2] == "gs":
+
+		cloud_vol = CloudVolume(path, mip=res, 
+			parallel=True, progress=False)
+		vol = cloud_vol[:,:,:][:,:,:,0]
+
+	else:
+
+		vol = tif.imread(path)
+
+	return vol
+
+
 if __name__ == "__main__":
 
 	parser = argparse.ArgumentParser()
@@ -49,13 +73,11 @@ if __name__ == "__main__":
 	seg_path = opt.cell_seg
 
 	mip = opt.mip
-	res = (2^mip, 2^mip, 50)
+	res = np.array((2^mip, 2^mip, 50))
 	
 	# Load volumes
 	syn_seg = load_volume(syn_seg_path, res)
 	seg = load_volume(seg_path, res)
-
-	volsize = syn_seg.shape
 
 	opt.diffusionsteplength_nm = 4
 	opt.nrdiffusionvectors = 10000
@@ -71,7 +93,7 @@ if __name__ == "__main__":
 	dvec = dvec*ds
 
 	# Dilation params
-	seg_se = ball(1)
+	seg_se = ball(2)
 	syn_se = np.zeros((3,3,3))
 	syn_se[:,:,1] = 1
 
@@ -84,20 +106,34 @@ if __name__ == "__main__":
 
 	errcount = 0
 
+	syn_post = []
+	syn_post_size = []
 	for i in range(nsyn):
 
 		syn_id = syn_id_list[i]
 		pre_id = pre_id_list[i]
 
 		syn_mask = (syn_seg==syn_id).astype("uint8")
+		x, y, z = np.where(syn_mask)
+		syn_coord = np.c_[x,y,z]
+
+		coord_max = np.max(syn_coord, axis=0)
+		coord_min = np.min(syn_coord, axis=0)
+		coord_max += np.ceil(r/voxelsize).astype("int")
+		coord_min -= np.ceil(r/voxelsize).astype("int")
+
+		syn_mask = syn_mask[[slice(coord_min[i], coord_max[i]) for i in range(3)]]
+		seg_mask = seg[[slice(coord_min[i], coord_max[i]) for i in range(3)]]
 
 		esyn = dilation(syn_mask, syn_se)
-		pseg = (seg==pre_id).astype("uint8")
+		pseg = (seg_mask==pre_id).astype("uint8")
 		epseg = dilation(pseg, seg_se)
 		
-		exc_valid = (seg!=0)*(esyn==0)
+		exc_valid = (seg_mask!=0) + (esyn==0)
 		epseg[exc_valid] = 0
 		
+		volsize = epseg.shape
+
 		emittervoxels_loc = np.where(epseg)
 		nemitvx = emittervoxels_loc[0].shape[0]
 
@@ -109,16 +145,16 @@ if __name__ == "__main__":
 		else:
 
 			sourcevoxnr = np.random.randint(nemitvx, size=opt.nrofparticles)
-			x = emittervoxels_loc[sourcevoxnr]
-			y = emittervoxels_loc[sourcevoxnr]
-			z = emittervoxels_loc[sourcevoxnr]
+			x = emittervoxels_loc[0][sourcevoxnr]
+			y = emittervoxels_loc[0][sourcevoxnr]
+			z = emittervoxels_loc[0][sourcevoxnr]
 
-			nt = np.zeros((nemitvx, 5))
+			nt = np.zeros((opt.nrofparticles, 5))
 			nt[:,0] = x
 			nt[:,1] = y
 			nt[:,2] = z
-			nt[:,3] = np.zeros(nemitvx)
-			nt[:,4] = np.ones(nemitvx)
+			nt[:,3] = np.zeros(opt.nrofparticles)
+			nt[:,4] = np.ones(opt.nrofparticles)
 
 			count = 0
 			while (count<opt.maxiterations) and (np.sum(nt[:,4])>0):
@@ -131,14 +167,14 @@ if __name__ == "__main__":
 				minp = np.min(p, axis=0)
 				maxp = np.max(p, axis=0)
 
-				if (np.min(minp)<0) or np.max(maxp-np.array(syn_vol.shape)):
+				if (np.min(minp)<0) or np.max(maxp-np.array(syn_vol.shape))>=0:
 					
 					exited = (np.min(p, axis=1)<0) + (p[:,0]>=volsize[0]) + (p[:,1]>=volsize[1]) + (p[:,2]>=volsize[2])
 					nt[exited,:3] = nt[exited,:3] - v[exited,:] # move back
 					nt[exited,4] = 0
 					p = np.round(nt[:,:3])
 
-				vids = seg[p[:,0], p[:,1], p[:,2]]
+				vids = seg_mask[p[:,0], p[:,1], p[:,2]]
 
 				# Particles which moved to the presynaptic side
 				vids_pre = vids==pre_id
@@ -150,3 +186,23 @@ if __name__ == "__main__":
 				nt[sp, 4] = 0
 
 				count += 1
+
+			post_list, post_size = np.unique(nt[:,3], return_counts=True)
+			# If there are unassigned neurotransmitters
+			if post_list[0] == 0:
+				post_list = post_list[1:]
+				post_size = post_size[1:]
+
+			post_filt = post_size>(opt.nrofparticles*0.01)
+			post_list = post_list[post_filt]
+			post_size = post_size[post_filt]
+
+			# Compute proportion
+			post_size = post_size/np.sum(post_size)
+
+			syn_post.append(post_list)
+			syn_post_size.append(post_size)
+
+	syn_info = {"syn_id": syn_id_list,
+							"pre_id": pre_id_list,
+							"post_id"}
