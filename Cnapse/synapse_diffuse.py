@@ -7,6 +7,7 @@ from sys import argv
 
 import numpy as np
 import pandas as pd
+import tifffile as tif
 from skimage.morphology import dilation, ball
 
 from cloudvolume import CloudVolume
