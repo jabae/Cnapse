@@ -184,6 +184,7 @@ if __name__ == "__main__":
 					nt[exited,4] = 0
 					p = np.round(nt[:,:3])
 
+				p = p.astype("int")
 				vids = seg_mask[p[:,0], p[:,1], p[:,2]]
 
 				# Particles which moved to the presynaptic side
