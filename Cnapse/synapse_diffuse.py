@@ -168,7 +168,7 @@ if __name__ == "__main__":
 			while (count<opt.maxiterations) and (np.sum(nt[:,4])>0):
 
 				vnr = np.random.randint(opt.nrdiffusionvectors, size=opt.nrofparticles)
-				v = dvec[vnr,:]*nt[:,4]
+				v = dvec[vnr,:]*nt[:,4].reshape((-1,1))
 				nt[:,:3] = nt[:,:3] + v
 
 				p = np.round(nt[:,:3])
