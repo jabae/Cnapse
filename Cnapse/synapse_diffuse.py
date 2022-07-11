@@ -84,7 +84,7 @@ if __name__ == "__main__":
 	opt.nrofparticles = 1000
 	opt.voxelsize = np.array([4,4,50])
 	opt.maxiterations=10000
-	opt.synexpandradiusxy_px = 6
+	# opt.synexpandradiusxy_px = 6
 
 	# Precompute diffusion vectors
 	dvec = fibonacci_spiral_sphere(opt.nrdiffusionvectors)
@@ -99,15 +99,16 @@ if __name__ == "__main__":
 
 	# Synapse info
 	syn_info_df = pd.read_csv(opt.syn_info)
-
 	syn_id_list = np.array(syn_info_df["syn_id"])
 	pre_id_list = np.array(syn_info_df["pre_id"])
 	nsyn = syn_id_list.shape[0]
 
 	errcount = 0
 
-	syn_post = []
-	syn_post_size = []
+	out_syn_id = []
+	out_pre_id = []
+	out_post_id = []
+	out_post_prop = []
 	for i in range(nsyn):
 
 		syn_id = syn_id_list[i]
@@ -200,9 +201,15 @@ if __name__ == "__main__":
 			# Compute proportion
 			post_size = post_size/np.sum(post_size)
 
-			syn_post.append(post_list)
-			syn_post_size.append(post_size)
+			for j in range(post_list.shape[0]):
+				out_syn_id.append(int(syn_id))
+				out_pre_id.append(int(pre_id))
+				out_post_id.append(int(post_list[j]))
+				out_post_prop.append(post_size[j])
 
-	syn_info = {"syn_id": syn_id_list,
-							"pre_id": pre_id_list,
-							"post_id"}
+	syn_info = {"syn_id": out_syn_id,
+				"pre_id": out_pre_id,
+				"post_id": out_post_id,
+				"prop": out_post_prop}
+	out_df = pd.DataFrame(data=syn_info)
+	out_df.to_csv("synapse_assign.csv", index=False)
