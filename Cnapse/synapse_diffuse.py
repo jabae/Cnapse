@@ -80,6 +80,8 @@ if __name__ == "__main__":
 	syn_seg = load_volume(syn_seg_path, res)
 	seg = load_volume(seg_path, res)
 
+	volsize = syn_seg.shape
+
 	opt.diffusionsteplength_nm = 4
 	opt.nrdiffusionvectors = 10000
 	opt.nrofparticles = 1000
@@ -125,6 +127,9 @@ if __name__ == "__main__":
 		coord_max += np.ceil(opt.radius_nm/opt.voxelsize).astype("int")
 		coord_min -= np.ceil(opt.radius_nm/opt.voxelsize).astype("int")
 
+		coord_min = np.array([np.max([0, coord_min[i]]) for i in range(3)])
+		coord_max = np.array([np.min([volsize[i], coord_max[i]]) for i in range(3)])
+
 		syn_mask = syn_mask[[slice(coord_min[i], coord_max[i]) for i in range(3)]]
 		seg_mask = seg[[slice(coord_min[i], coord_max[i]) for i in range(3)]]
 
@@ -135,7 +140,7 @@ if __name__ == "__main__":
 		exc_valid = (seg_mask!=0) + (esyn==0)
 		epseg[exc_valid] = 0
 		
-		volsize = epseg.shape
+		chunksize = epseg.shape
 
 		emittervoxels_loc = np.where(epseg)
 		nemitvx = emittervoxels_loc[0].shape[0]
@@ -172,7 +177,7 @@ if __name__ == "__main__":
 
 				if (np.min(minp)<0) or np.max(maxp-np.array(syn_vol.shape))>=0:
 					
-					exited = (np.min(p, axis=1)<0) + (p[:,0]>=volsize[0]) + (p[:,1]>=volsize[1]) + (p[:,2]>=volsize[2])
+					exited = (np.min(p, axis=1)<0) + (p[:,0]>=chunksize[0]) + (p[:,1]>=chunksize[1]) + (p[:,2]>=chunksize[2])
 					nt[exited,:3] = nt[exited,:3] - v[exited,:] # move back
 					nt[exited,4] = 0
 					p = np.round(nt[:,:3])
