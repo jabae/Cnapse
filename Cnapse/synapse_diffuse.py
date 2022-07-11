@@ -156,8 +156,8 @@ if __name__ == "__main__":
 
 			sourcevoxnr = np.random.randint(nemitvx, size=opt.nrofparticles)
 			x = emittervoxels_loc[0][sourcevoxnr]
-			y = emittervoxels_loc[0][sourcevoxnr]
-			z = emittervoxels_loc[0][sourcevoxnr]
+			y = emittervoxels_loc[1][sourcevoxnr]
+			z = emittervoxels_loc[2][sourcevoxnr]
 
 			nt = np.zeros((opt.nrofparticles, 5))
 			nt[:,0] = x
