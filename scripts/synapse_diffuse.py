@@ -98,7 +98,7 @@ if __name__ == "__main__":
 
 	# Dilation params
 	seg_se = ball(2)
-	syn_se = np.zeros((10,10,10))
+	syn_se = np.zeros((10,10,3))
 	syn_se[:,:,1] = 1
 
 	# Synapse info
@@ -131,14 +131,18 @@ if __name__ == "__main__":
 		coord_min = np.array([np.max([0, coord_min[i]]) for i in range(3)])
 		coord_max = np.array([np.min([volsize[i], coord_max[i]]) for i in range(3)])
 
-		syn_mask = syn_mask[[slice(coord_min[i], coord_max[i]) for i in range(3)]]
-		seg_mask = seg[[slice(coord_min[i], coord_max[i]) for i in range(3)]]
+		syn_mask = syn_mask[coord_min[0]:coord_max[0],
+												coord_min[1]:coord_max[1],
+												coord_min[2]:coord_max[2]]
+		seg_mask = seg[coord_min[0]:coord_max[0],
+									 coord_min[1]:coord_max[1],
+									 coord_min[2]:coord_max[2]]
 
 		esyn = dilation(syn_mask, syn_se)
 		pseg = (seg_mask==pre_id).astype("uint8")
 		epseg = dilation(pseg, seg_se)
 		
-		exc_valid = (seg_mask!=0) + (esyn==0)
+		exc_valid = (pseg!=0) + (esyn==0)
 		epseg[exc_valid] = 0
 		
 		chunksize = np.array(epseg.shape)
@@ -218,9 +222,12 @@ if __name__ == "__main__":
 				out_post_prop.append(post_size[j])
 				# out_error.append(0)
 
+		if (i+1)<=20:
+			print(f"{i}/{nsyn} assigned.")
+			
 	syn_info = {"syn_id": out_syn_id,
 				"pre_id": out_pre_id,
 				"post_id": out_post_id,
 				"prop": out_post_prop}
 	out_df = pd.DataFrame(data=syn_info)
-	out_df.to_csv("synapse_assign.csv", index=False)
+	out_df.to_csv("synapse_assign_add.csv", index=False)
