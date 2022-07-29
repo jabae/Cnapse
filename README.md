@@ -4,7 +4,7 @@ Semi-automated synapse detection in *C*. *elegans* electron microscopy (EM) imag
 ## Synapse detection pipeline
 ![](figures/synapse_detection.png)
 
-*Cnapse* takes raw EM image as an input and use trained convolutional neural network (CNN) to detect the synapse candidates. Then, synaptic partners are assigned by running Monte Carlo simulation of neurotransmitters (Witvliet et al., 2021) and the size of the synaptic connections are determined by the proportion of neurotransmitters.
+*Cnapse* takes raw EM image as an input and use trained convolutional neural network (CNN) to detect the synapse candidates. Then, synaptic partners are assigned by running Monte Carlo simulation of neurotransmitters (Witvliet et al. 2021) and the size of the synaptic connections are determined by the proportion of neurotransmitters.
 
 ## Synpase assignment
 ```
@@ -16,3 +16,6 @@ assign.py --syn_seg [syn_seg.tif] --cell_seg [cell_seg.tif] --mip [mip] --r [r] 
 - `r` : Radius in [nm] for partner assignment
 - `mode` : Assignment mode (`fixed` or `adaptive`)
 - `outpath` : Path to save result
+
+## References
+Witvliet, Daniel, Ben Mulcahy, James K. Mitchell, Yaron Meirovitch, Daniel R. Berger, Yuelong Wu, Yufang Liu, et al. 2021. “Connectomes across Development Reveal Principles of Brain Maturation.” Nature 596 (7871): 257–61.
