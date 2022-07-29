@@ -1,5 +1,10 @@
 # Cnapse
-Automated synapse detection in C. elegans EM images.
+Semi-automated synapse detection in *C*. *elegans* electron microscopy (EM) images.
+
+## Synapse detection pipeline
+![](figures/synapse_detection.png)
+
+*Cnapse* takes raw EM image as an input and use trained convolutional neural network (CNN) to detect the synapse candidates. Then, synaptic partners are assigned by running Monte Carlo simulation of neurotransmitters (Witvliet et al., 2021) and the size of the synaptic connections are determined by the proportion of neurotransmitters.
 
 ## Synpase assignment
 ```
