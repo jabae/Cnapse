@@ -1,5 +1,4 @@
-# Cnapse
-Semi-automated synapse detection in *C*. *elegans* electron microscopy (EM) images.
+# Cnapse: Semi-automated synapse detection in *C*. *elegans* electron microscopy (EM) images
 
 ## Synapse detection pipeline
 ![](figures/synapse_detection.png)
