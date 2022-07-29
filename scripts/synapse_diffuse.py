@@ -1,5 +1,5 @@
 """
-Neurotransmitter diffusion simulation
+Synapse partner assignment via neurotransmitter diffusion simulation
 """
 
 import argparse
@@ -67,6 +67,8 @@ if __name__ == "__main__":
 		help="Mip level number (2^[mip] nm)")
 	parser.add_argument("--syn_info", required=True, type=str,
 		help="Synapse info")
+	parser.add_argument("--outpath", required=False, type=str,
+		default="synapse_assigned.csv", help="Output synapse file path")
 
 	opt = parser.parse_args()
 
@@ -230,4 +232,4 @@ if __name__ == "__main__":
 				"post_id": out_post_id,
 				"prop": out_post_prop}
 	out_df = pd.DataFrame(data=syn_info)
-	out_df.to_csv("synapse_assign_add.csv", index=False)
+	out_df.to_csv(opt.out_path, index=False)
