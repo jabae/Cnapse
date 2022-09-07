@@ -4,7 +4,7 @@ authors:
 - family-names: "Bae"
   given-names: "J. Alexander"
   orcid: "https://orcid.org/0000-0002-4681-6342"
-title: "Cnapse: Semi-automated synapse detection in C. elegans EM images"
+title: "Cnapse: Automated synapse detection in C. elegans EM images"
 version: 0.1.0
 date-released: 2022-09-01
 url: "https://github.com/jabae/Cnapse"
