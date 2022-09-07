@@ -2,6 +2,11 @@
 
 *Cnapse* is a tool that enables semi-automated synapse detection in *C*. *elegans* electron microscopy (EM) images. *Cnapse* is designed to detect only chemical synapses as these synapses have clear visual features in EM images such as synaptic vesicles and dark regions near the presynaptic membrane.
 
+## Installation
+```
+pip install -e .
+```
+
 ## _Cnapse_ pipeline
 ![](figures/synapse_detection.png)
 
