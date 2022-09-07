@@ -107,6 +107,7 @@ if __name__ == "__main__":
 	syn_info_df = pd.read_csv(opt.syn_info)
 	syn_id_list = np.array(syn_info_df["syn_id"])
 	pre_id_list = np.array(syn_info_df["pre_id"])
+	size_list = np.array(syn_info_df["size"])
 	nsyn = syn_id_list.shape[0]
 
 	errcount = 0
@@ -114,16 +115,20 @@ if __name__ == "__main__":
 	out_syn_id = []
 	out_pre_id = []
 	out_post_id = []
-	out_post_prop = []
+	out_post_size = []
 	# out_error = []
 	for i in range(nsyn):
 
 		syn_id = syn_id_list[i]
 		pre_id = pre_id_list[i]
+		syn_size = size_list[i]
 
 		syn_mask = (syn_seg==syn_id).astype("uint8")
 		x, y, z = np.where(syn_mask)
 		syn_coord = np.c_[x,y,z]
+
+		if x.shape[0] == 0:
+			continue
 
 		coord_max = np.max(syn_coord, axis=0)
 		coord_min = np.min(syn_coord, axis=0)
@@ -221,15 +226,15 @@ if __name__ == "__main__":
 				out_syn_id.append(int(syn_id))
 				out_pre_id.append(int(pre_id))
 				out_post_id.append(int(post_list[j]))
-				out_post_prop.append(post_size[j])
+				out_post_size.append(post_size[j]*syn_size)
 				# out_error.append(0)
 
-		if (i+1)<=20:
-			print(f"{i}/{nsyn} assigned.")
+		if (i+1)<=20 or (i+1)%100==0:
+			print(f"{i+1}/{nsyn} assigned.")
 			
 	syn_info = {"syn_id": out_syn_id,
-				"pre_id": out_pre_id,
-				"post_id": out_post_id,
-				"prop": out_post_prop}
+							"pre_id": out_pre_id,
+							"post_id": out_post_id,
+							"size": out_post_size}
 	out_df = pd.DataFrame(data=syn_info)
-	out_df.to_csv(opt.out_path, index=False)
+	out_df.to_csv(opt.outpath, index=False)
