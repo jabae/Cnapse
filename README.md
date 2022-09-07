@@ -15,12 +15,12 @@ Refer to inference command in [detectEM](https://github.com/jabae/detectEM).
 ### Postsynaptic partner assignment
 The following step, postsynaptic partner assignment, assigns partners by running Monte Carlo simulation of neurotransmitter diffusion[^2] and the size of the synaptic connections are determined by the proportion of neurotransmitters.
 ```
-synapse_diffuse.py --syn_seg [syn_seg.tif] --cell_seg [cell_seg.tif] --mip [mip] --outpath [outpath.csv]
+synapse_diffuse.py --syn_seg [syn_seg.tif] --cell_seg [cell_seg.tif] --syn_info [syn_info.csv] --mip [mip] --outpath [outpath.csv]
 ```
 - `syn_seg` : Synpase segmentation volume
 - `cell_seg` : Cell segmentation volume
 - `syn_info` : List of presynaptic density ids with assigned presynaptic cell ids
-- `mip` : Mip level of the volumes ($2^{[mip]}$ $nm$ resolution)
+- `mip` : Mip level of the volumes (2^[mip] $nm$ resolution)
 - `outpath` : Path to save result
 
 ## Synapse table format
