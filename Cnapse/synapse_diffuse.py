@@ -12,6 +12,7 @@ from skimage.morphology import dilation, ball
 
 from cloudvolume import CloudVolume
 
+from utils import load_volume
 
 ## Fibonacci spiral model
 def fibonacci_spiral_sphere(n_points):
@@ -30,30 +31,6 @@ def fibonacci_spiral_sphere(n_points):
  	vec[:,2] = v
 
  	return vec
-
-
-## Load volume
-def load_volume(path, res):
-	"""
-	INPUT:
-	path : Path of the volume
-	res : (x, y, z) resolution in nm
-
-	OUTPUT:
-	vol : Image volume
-	"""
-
-	if path[:2] == "gs":
-
-		cloud_vol = CloudVolume(path, mip=res, 
-			parallel=True, progress=False)
-		vol = cloud_vol[:,:,:][:,:,:,0]
-
-	else:
-
-		vol = tif.imread(path)
-
-	return vol
 
 
 if __name__ == "__main__":
