@@ -4,6 +4,9 @@
 
 ## Installation
 ```
+git clone https://github.com/jabae/Cnapse.git
+cd Cnapse
+
 pip install -e .
 ```
 
@@ -26,6 +29,8 @@ python synapse_getinfo.py --syn_seg [syn_seg.tif] --cell_seg[cell_seg.tif] --res
 - `cell_seg` : Cell segmentation volume
 - `res` : x, y, z resolution in $nm$
 - `outpath` : Path to save result
+
+This script outputs synapse info table with synapse ids, presynaptic cell ids, active zone sizes and locations. This synapse info file can be used for postsynaptic partner assignment in the next step.
 
 ### Postsynaptic partner assignment
 The following step, postsynaptic partner assignment, assigns partners by running Monte Carlo simulation of neurotransmitter diffusion[^2] and the size of the synaptic connections are determined by the proportion of neurotransmitters.
