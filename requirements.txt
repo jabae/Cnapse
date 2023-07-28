@@ -3,6 +3,7 @@ numpy
 scipy
 matplotlib
 h5py
+tifffile
 
 torch
 torchvision
